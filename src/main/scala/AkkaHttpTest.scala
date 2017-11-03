@@ -18,11 +18,10 @@ object HelloWorld{
 
     val http = Http()
     val response: Future[HttpResponse] =
-      http.singleRequest(HttpRequest(uri = "http://www.webscantest.com"))
+      http.singleRequest(HttpRequest(uri = "http://akka.io"))
 
     val result = response.map {
       case HttpResponse(StatusCodes.OK, headers, entity, _) =>
-        println(entity)
         Unmarshal(entity).to[String]
         http.shutdownAllConnectionPools()
       case x => s"Unexpected status code ${x.status}"
