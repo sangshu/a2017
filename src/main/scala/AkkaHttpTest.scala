@@ -1,14 +1,14 @@
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 
-object HelloWorld{
-  def main(args:Array[String]):Unit = {
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+
+object HelloWorld {
+  def main(args: Array[String]): Unit = {
     println("HelloWorld")
 
     implicit val system = ActorSystem()
@@ -27,7 +27,7 @@ object HelloWorld{
     }
     println(Await.result(result, 10.seconds))
 
-     http.shutdownAllConnectionPools()
+    http.shutdownAllConnectionPools()
     system.terminate()
   }
 }
