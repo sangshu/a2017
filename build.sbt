@@ -1,4 +1,4 @@
-name := "akka-http-streaming-example"
+name := "a2017"
 
 version := "1.0"
 
