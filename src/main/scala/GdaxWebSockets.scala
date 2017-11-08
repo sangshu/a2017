@@ -16,10 +16,13 @@ object GdaxWebSockets extends App {
   implicit val actorSystem = ActorSystem("akka-system")
   implicit val flowMaterializer = ActorMaterializer()
 
+  def local = args!= null && args(0) == "local"
+
   // print each incoming strict text message
   val printSink: Sink[Message, Future[Done]] = Sink.foreach {
     case message: TextMessage.Strict =>
-      println(s"out: $message")
+      //println(s"out: $message")
+      SparkStream.textStream(message.text)
 
     case _ => println(s"received unknown message format")
   }
@@ -37,21 +40,22 @@ object GdaxWebSockets extends App {
   }
 
 
-val flow =
-  Flow.fromSinkAndSourceMat(printSink, source)(Keep.right)
+  val flow =
+    Flow.fromSinkAndSourceMat(printSink, source)(Keep.right)
 
 
-val (upgradeResponse, sourceClosed) =
-  Http().singleWebSocketRequest(WebSocketRequest("wss://ws-feed.gdax.com"), flow)
+  val (upgradeResponse, sourceClosed) =
+    Http().singleWebSocketRequest(WebSocketRequest("wss://ws-feed.gdax.com"), flow)
 
-val connected = upgradeResponse.map { upgrade =>
-  if (upgrade.response.status == StatusCodes.SwitchingProtocols || upgrade.response.status == StatusCodes.OK) {
-    Done
-  } else {
-    throw new RuntimeException(s"Connection failed: ${upgrade.response.status}")
+  val connected = upgradeResponse.map { upgrade =>
+    if (upgrade.response.status == StatusCodes.SwitchingProtocols || upgrade.response.status == StatusCodes.OK) {
+      Done
+    } else {
+      throw new RuntimeException(s"Connection failed: ${upgrade.response.status}")
+    }
   }
-}
 
-connected.onComplete(println)
+  println("Hi Mel")
+  connected.onComplete(println)
 
 }

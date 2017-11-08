@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Class-Path: akka-stream_2.11-2.4.17.jar spray-json_2.11-1.3.3.jar reac
+ tive-streams-1.0.0.jar akka-http_2.11-10.0.6.jar akka-parsing_2.11-10
+ .0.6.jar akka-actor_2.11-2.4.20.jar scala-java8-compat_2.11-0.7.0.jar
+  config-1.3.0.jar akka-http-spray-json_2.11-10.0.6.jar scala-parser-c
+ ombinators_2.11-1.0.4.jar ssl-config-core_2.11-0.2.1.jar akka-http-co
+ re_2.11-10.0.6.jar scala-library-2.11.11.jar
+Main-Class: GdaxWebSockets
+
