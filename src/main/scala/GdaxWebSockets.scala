@@ -8,13 +8,13 @@ import akka.http.scaladsl.model.ws.{Message, TextMessage, WebSocketRequest}
 import akka.stream.scaladsl.{Flow, Keep, Sink, Source, SourceQueue}
 import akka.stream.{ActorMaterializer, OverflowStrategy}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Future, Promise}
 
 object GdaxWebSockets extends App {
   implicit val actorSystem = ActorSystem("akka-system")
   implicit val flowMaterializer = ActorMaterializer()
+  import actorSystem.dispatcher
 
   def local = args!= null && args(0) == "local"
 
@@ -23,7 +23,6 @@ object GdaxWebSockets extends App {
     case message: TextMessage.Strict =>
       //println(s"out: $message")
       SparkStream.textStream(message.text)
-
     case _ => println(s"received unknown message format")
   }
 

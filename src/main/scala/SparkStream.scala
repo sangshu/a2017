@@ -1,13 +1,12 @@
 import org.apache.spark.sql.SparkSession
 
 object SparkStream {
-  var spark:SparkSession = spark
-  if (GdaxWebSockets.local) {
-    spark = SparkSession
+  val spark = SparkSession
       .builder
       .appName("StructuredNetworkWordCount")
       .getOrCreate()
-  }
+
+  import spark.implicits._
 
   val lines = spark.readStream.format("z")
 
