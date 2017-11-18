@@ -8,10 +8,16 @@ libraryDependencies ++= {
   val akkaV = "2.4.20"
   val akkaHttpV = "10.0.6"
   val scalaTestV = "3.0.0"
+  val spark_version = "2.2.0"
   Seq(
-    "org.apache.spark" %% "spark-core" % "2.2.0",
-    "org.apache.spark" %% "spark-sql" % "2.2.0",
-    "com.typesafe.akka" %% "akka-http-core" % akkaHttpV
+    "org.apache.spark" %% "spark-core" % spark_version,
+    "org.apache.spark" %% "spark-sql" % spark_version,
+    "org.apache.spark" %% "spark-streaming" % spark_version,
+    "com.typesafe.akka" %% "akka-http-core" % akkaHttpV,
+    "org.apache.bahir" %% "spark-streaming-akka" % spark_version
+
+    //"com.typesafe.akka" %% "akka-stream-experimental" % "2.0.5",
+    //"org.twitter4j" % "twitter4j-stream" % "4.0.3"
 //    akka                        %% "akka-actor"                           % akkaV,
 //    akka                        %% "akka-http-spray-json"                 % akkaHttpV
   )

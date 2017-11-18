@@ -16,7 +16,6 @@ object GdaxWebSockets extends App {
   implicit val flowMaterializer = ActorMaterializer()
   import actorSystem.dispatcher
 
-  def local = args!= null && args(0) == "local"
 
   // print each incoming strict text message
   val printSink: Sink[Message, Future[Done]] = Sink.foreach {

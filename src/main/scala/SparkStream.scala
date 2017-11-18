@@ -1,16 +1,26 @@
+import akka.actor.{ActorSystem, Props}
+import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.streaming.akka.AkkaUtils
+import org.apache.spark.streaming.{Milliseconds, StreamingContext}
+
+import scala.concurrent.duration._
 
 object SparkStream {
-  val spark = SparkSession
-      .builder
-      .appName("StructuredNetworkWordCount")
-      .getOrCreate()
+  val akkaConf = ConfigFactory.parseString(
+    s"""akka.actor.provider = "akka.remote.RemoteActorRefProvider"
+       |akka.remote.enabled-transports = ["akka.remote.netty.tcp"]
+       |akka.remote.netty.tcp.hostname = "$AkkaStream.host"
+       |akka.remote.netty.tcp.port = $AkkaStream.port
+       |""".stripMargin)
 
-  import spark.implicits._
 
-  val lines = spark.readStream.format("z")
+
+  implicit val system = ActorSystem("pinttest", akkaConf)
+
+  import system.dispatcher
 
   def textStream(text: String): Unit = {
-    println(text)
+    tester ! text
   }
 }
