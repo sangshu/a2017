@@ -33,15 +33,15 @@ object GdaxClient extends App {
   import spark.implicits._
 
   val ssc: StreamingContext = new StreamingContext(spark.sparkContext, Milliseconds(100))
-//  val host = "127.0.0.1"
-//  val port = "9992"
+  //  val host = "127.0.0.1"
+  //  val port = "9992"
   val name = "gdaxclient"
   val lines = AkkaUtils.createStream[Array[String]](ssc,
     Props(classOf[BahirActorReceiver[Array[String]]]),
     "BTCUSD")
 
   lines.foreachRDD {
-    rdd => rdd.foreach(dd⇒dd.foreach(println))
+    rdd => rdd.foreach(dd ⇒ {dd.foreach(a ⇒ print(s"$a,"));println})
   }
 
 

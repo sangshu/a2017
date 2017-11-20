@@ -28,6 +28,13 @@ object TickFeederActor {
 //       |akka.remote.netty.tcp.hostname = "$host"
 //       |akka.remote.netty.tcp.port = $port
 //       |""".stripMargin)
+  val message2: TextMessage = TextMessage("{\"type\":\"subscribe\"," +
+                                       "\"channels\":[{\"name\":\"ticker\"," +
+                                       "\"product_ids\":[\"BTC-USD\"]}]}")
+
+  val message: TextMessage = TextMessage("{\"type\":\"subscribe\",\"product_ids\":[\"BTC-USD\"]," +
+                                         "\"channels\":[\"full\"]}")
+    //"""{"type":"subscribe","product_ids":["ETH-USD","BTC-USD"],"channels":["full"]}""")
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
@@ -35,16 +42,14 @@ object TickFeederActor {
   def props:Props = Props(new TickFeederActor())
   //val feeder = system.actorOf(Props[TickFeederActor],"BTCUSD")
 
-  private val sample = "{\"type\":\"ticker\",\"sequence\":4392902023,\"product_id\":\"BTC-USD\"," +
+  private val sample1 = "{\"type\":\"ticker\",\"sequence\":4392902023,\"product_id\":\"BTC-USD\"," +
                   "\"price\":\"7812.00000000\",\"open_24h\":\"7643.00000000\",\"volume_24h\":\"10102.71105424\",\"low_24h\":\"7812.00000000\",\"high_24h\":\"7847.98000000\",\"volume_30d\":\"625869.28881853\",\"best_bid\":\"7811.99\",\"best_ask\":\"7812\",\"side\":\"buy\",\"time\":\"2017-11-19T04:03:41.992000Z\",\"trade_id\":24525825,\"last_size\":\"0.00000127\"}"
-  val keys = sample.replace("{","").replace("}","").split(",\"").map(_.split("\":")(0).replace("\"",""))
+  private val sample2 = """{"type":"open","side":"buy","price":"368.03000000","order_id":"22153e4e-50b7-4320-8481-28477fcf4bfb","remaining_size":"3.00000000","product_id":"ETH-USD","sequence":1513318609,"time":"2017-11-20T20:40:55.321000Z"}"""
+  val keys = sample2.replace("{","").replace("}","").split(",\"").map(_.split("\":")(0).replace("\"",""))
 }
 
 class TickFeederActor extends Actor {
   import TickFeederActor._
-  val message: TextMessage = TextMessage("{\"type\":\"subscribe\"," +
-                                         "\"channels\":[{\"name\":\"ticker\"," +
-                                         "\"product_ids\":[\"BTC-USD\"]}]}")
 
   private val log = Logging(context.system, this)
   private val receivers = new mutable.LinkedHashSet[ActorRef]()
@@ -74,9 +79,9 @@ class TickFeederActor extends Actor {
   private val incoming: Sink[Message, Future[Done]] =
     Sink.foreach {
       case message: TextMessage.Strict =>
-        println(s">>out: $message")
-        val values = message.text.split(',').map(_.split("\":")(1))
-        feed(values)
+        //println(s">>out: $message")
+        val values = message.text.split(",\"").map(_.split("\":")(1))
+        feed(values) //Array[String]
       case _ => log.error(s"received unknown message format. $GDAX_WS; $message")
     }
 
